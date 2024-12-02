@@ -39,6 +39,7 @@ const Login = () => {
       navigate("/home"); // ניווט לדף הבית לאחר הצלחה
     } catch (error) {
       console.error("Error during sign-in:", error);
+      alert("Error during sign-in:");
     }
   };
 

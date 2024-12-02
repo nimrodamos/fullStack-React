@@ -26,16 +26,8 @@ const Navbar = () => {
             </Link>
           </li>
           <li>
-            <Link to="/login" className="hover:text-gray-300 transition-colors">
-              Login
-            </Link>
-          </li>
-          <li>
-            <Link
-              to="/signup"
-              className="hover:text-gray-300 transition-colors"
-            >
-              Signup
+            <Link to="/" className="hover:text-gray-300 transition-colors">
+              LogOut
             </Link>
           </li>
         </ul>
