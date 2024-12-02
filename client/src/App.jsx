@@ -1,5 +1,5 @@
 import "./app.css";
-import NavBar from "./components/Navbar";
+
 import Login from "./components/Login";
 import Signup from "./components/SIgnup";
 import HomePage from "./pages/HomePage";
@@ -11,7 +11,6 @@ function App() {
   return (
     <div>
       <BrowserRouter>
-        <NavBar />
         <Routes>
           <Route path="/" element={<WelcomePage />}></Route>
           <Route path="/Home" element={<HomePage />}></Route>

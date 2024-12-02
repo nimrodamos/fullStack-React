@@ -3,9 +3,11 @@ import axios from "axios";
 import Cookies from "js-cookie";
 import { useDispatch } from "react-redux";
 import { setUser } from "../store/slices/userSlice";
+import { Link, useNavigate } from "react-router-dom";
 
 const Login = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -18,7 +20,7 @@ const Login = () => {
         },
       });
       console.log(data);
-      dispatch(setUser(data)); // עדכון המשתמש ב-Redux
+      dispatch(setUser(data));
     } catch (error) {
       console.error("Error fetching user data:", error);
     }
@@ -34,6 +36,7 @@ const Login = () => {
       );
       console.log("Response:", response.data);
       await handleFetch(); // קריאה ל-`handleFetch` לאחר התחברות
+      navigate("/home"); // ניווט לדף הבית לאחר הצלחה
     } catch (error) {
       console.error("Error during sign-in:", error);
     }
@@ -78,10 +81,20 @@ const Login = () => {
           </div>
           <button
             type="submit"
-            className="w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition-colors"
+            className="w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition-colors "
           >
             Login
           </button>
+
+          <div className="text-center">
+            <p className="text-gray-500 mb-2">Don't have an account?</p>
+            <Link
+              to="/signup"
+              className="text-blue-500 hover:text-blue-600 transition-colors underline"
+            >
+              Signup
+            </Link>
+          </div>
         </form>
       </div>
     </div>

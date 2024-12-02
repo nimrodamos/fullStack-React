@@ -18,7 +18,7 @@ dotenv.config(); // Load environment variables from `.env` file.
 app.use(express.json()); // Middleware to parse JSON requests.
 app.use(
   cors({
-    origin: "http://localhost:5175", // Allow requests from the frontend URL.
+    origin: "http://localhost:5173", // Allow requests from the frontend URL.
     credentials: true, // Enable credentials (e.g., cookies) in cross-origin requests.
   })
 );
