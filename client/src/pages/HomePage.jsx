@@ -1,6 +1,7 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import Navbar from "../components/Navbar";
+import Posts from "../components/post";
 
 const HomePage = () => {
   const user = useSelector((state) => state.user);
@@ -8,7 +9,7 @@ const HomePage = () => {
   return (
     <div>
       <Navbar />
-      <h1>Social Network</h1>
+      <Posts />
       <h1>{user?.email}</h1>
     </div>
   );
