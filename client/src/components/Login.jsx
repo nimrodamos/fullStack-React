@@ -45,7 +45,7 @@ const Login = () => {
 
   return (
     <div className="flex items-center justify-center bg-gray-100">
-      <div className="bg-white p-8 rounded shadow-md w-full max-w-md">
+      <div className="bg-gray-100 bg-opacity-70 backdrop-blur-md rounded shadow-md max-w-md w-full p-8">
         <h2 className="text-2xl font-bold text-center mb-6">Login</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>

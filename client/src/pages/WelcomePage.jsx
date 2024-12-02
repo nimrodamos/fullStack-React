@@ -6,7 +6,7 @@ const WelcomePage = () => {
   const user = useSelector((state) => state.user);
 
   return (
-    <div className="min-h-screen bg-blue-500 flex flex-col items-center justify-center">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-r from-purple-400 via-pink-500 to-red-500">
       {/* מידע נוסף ב-WelcomePage */}
       <div className="text-white text-center mt-8">
         <h1 className="text-3xl font-bold">WelcomePage</h1>
@@ -14,7 +14,7 @@ const WelcomePage = () => {
       </div>
 
       {/* טופס Login */}
-      <div className="bg-white rounded shadow-md max-w-md w-full">
+      <div className="max-w-md w-full">
         <Login />
       </div>
     </div>
