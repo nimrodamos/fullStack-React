@@ -2,9 +2,11 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import { setUser } from "../store/slices/userSlice";
+import { useNavigate } from "react-router-dom";
 
 const Signup = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     username: "",
     email: "",
@@ -29,6 +31,7 @@ const Signup = () => {
       console.log(data.you);
       dispatch(setUser(data.you));
       console.log("dispatched!");
+      navigate("/home");
     } catch (error) {
       console.error(error);
     }
