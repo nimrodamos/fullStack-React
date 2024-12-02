@@ -1,7 +1,6 @@
 import React from "react";
 
 const Posts = () => {
-  // רשימת פוסטים סטטית
   const posts = [
     {
       id: 1,

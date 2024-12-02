@@ -6,7 +6,7 @@ const WelcomePage = () => {
   const user = useSelector((state) => state.user);
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-r from-purple-400 via-pink-500 to-red-500">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-project-color">
       {/* מידע נוסף ב-WelcomePage */}
       <div className="text-white text-center mt-8">
         <h1 className="text-3xl font-bold">WelcomePage</h1>
