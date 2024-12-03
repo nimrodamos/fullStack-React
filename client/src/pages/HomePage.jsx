@@ -1,7 +1,7 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import Navbar from "../components/Navbar";
-import Posts from "../components/post";
+import Posts from "../components/posts";
 import AddPost from "../components/AddPost";
 
 const HomePage = () => {
