@@ -1,16 +1,23 @@
 import express from 'express';
-import { signup, login } from '../controllers/userController.js';
+import { signup, login, getUserByDisplayName, getAllUsers } from '../controllers/userController.js';
 import { body } from 'express-validator';
 
 const router = express.Router();
 
-// POST /users/signup - Create a new user
+// יצירת משתמש חדש (Signup)
 router.post('/signup', [
-    body('email').isEmail().withMessage('Please enter a valid email'),
-    body('displayName').notEmpty().withMessage('Display Name is required')
-], signup); // Use the signup controller function
+    body('username').notEmpty().withMessage('Username is required'),
+    body('email').isEmail().withMessage('Valid email is required'),
+    body('password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters')
+], signup);
 
-// POST /users/login - Login user by email
-router.post('/login', login); // Use the login controller function
+// כניסת משתמש קיים (Login)
+router.post('/login', login);
+
+// מציאת משתמש לפי displayName
+router.get('/name/:displayName', getUserByDisplayName);
+
+// הצגת כל המשתמשים
+router.get('/', getAllUsers);
 
 export default router;

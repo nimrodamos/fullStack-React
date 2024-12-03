@@ -34,12 +34,55 @@ export const getPostById = async (req, res) => {
     const { postId } = req.params;
 
     try {
-        const post = await Post.findById(postId).populate('comments'); // Populate comments
+        const post = await Post.findById(postId)
+            .populate('comments')  // Populate comments
+            .exec(); // .exec() מוסיף תמיכה לאסינכרוניות
+
         if (!post) {
             return res.status(404).json({ message: 'Post not found' });
         }
 
         res.status(200).json(post); // Return post with comments
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+// Update a post by its ID
+export const updatePost = async (req, res) => {
+    const { postId } = req.params;
+    const { title, content } = req.body;
+
+    try {
+        const post = await Post.findById(postId);
+        if (!post) {
+            return res.status(404).json({ message: 'Post not found' });
+        }
+
+        // Update the post fields
+        post.title = title || post.title;
+        post.content = content || post.content;
+
+        await post.save(); // Save the updated post
+
+        res.status(200).json(post); // Return updated post
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+// Delete a post by its ID
+export const deletePost = async (req, res) => {
+    const { postId } = req.params;
+
+    try {
+        const post = await Post.findByIdAndDelete(postId);
+
+        if (!post) {
+            return res.status(404).json({ message: 'Post not found' });
+        }
+
+        res.status(200).json({ message: 'Post deleted successfully' });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }

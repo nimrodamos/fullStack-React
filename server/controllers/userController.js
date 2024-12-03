@@ -1,44 +1,74 @@
-import User from '../models/User.js';
+import User from '../models/user.js';
 import { validationResult } from 'express-validator';
 
-// Create a new user (signup)
+// יצירת משתמש חדש (Signup)
 export const signup = async (req, res) => {
-    // Validate request body
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() });
     }
 
-    const { email, displayName } = req.body;
+    const { username, email, password } = req.body;
 
     try {
-        // Check if user already exists
+        // בדיקה אם המשתמש כבר קיים
         const existingUser = await User.findOne({ email });
         if (existingUser) {
             return res.status(400).json({ message: 'User already exists' });
         }
 
-        // Create new user
-        const user = new User({ email, displayName });
+        // יצירת משתמש חדש
+        const user = new User({ username, email, password });
         await user.save();
-        res.status(201).json(user); // Return created user
+        res.status(201).json(user);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
 };
 
-// Login user by email
+// כניסת משתמש קיים (Login)
 export const login = async (req, res) => {
-    const { email } = req.body;
+    const { username, email, password } = req.body;
 
     try {
-        // Find user by email
-        const user = await User.findOne({ email });
+        // חיפוש משתמש לפי username או email
+        const user = await User.findOne({ $or: [{ username }, { email }] });
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
         }
 
-        res.status(200).json(user); // Return user data if found
+        // בדיקת התאמת סיסמה
+        if (user.password !== password) {
+            return res.status(401).json({ message: 'Invalid credentials' });
+        }
+
+        res.status(200).json(user);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+// מציאת משתמש לפי displayName
+export const getUserByDisplayName = async (req, res) => {
+    const { displayName } = req.params;
+
+    try {
+        const user = await User.findOne({ username: displayName });
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        res.status(200).json(user);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+// הצגת כל המשתמשים
+export const getAllUsers = async (req, res) => {
+    try {
+        const users = await User.find();
+        res.status(200).json(users);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }

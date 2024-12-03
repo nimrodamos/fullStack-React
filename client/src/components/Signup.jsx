@@ -2,9 +2,11 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import { setUser } from "../store/slices/userSlice";
+import { useNavigate } from "react-router-dom";
 
 const Signup = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     username: "",
     email: "",
@@ -29,13 +31,14 @@ const Signup = () => {
       console.log(data.you);
       dispatch(setUser(data.you));
       console.log("dispatched!");
+      navigate("/home");
     } catch (error) {
       console.error(error);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-r from-purple-400 via-pink-500 to-red-500">
       <div className="bg-white p-8 rounded shadow-md w-full max-w-md">
         <h2 className="text-2xl font-bold text-center mb-6">Signup</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -92,7 +95,7 @@ const Signup = () => {
           </div>
           <button
             type="submit"
-            className="w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition-colors"
+            className="w-full bg-project-color text-white py-2 px-4 rounded  transition-colors"
           >
             Signup
           </button>
