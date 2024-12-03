@@ -45,7 +45,7 @@ function AddPost() {
   };
 
   return (
-    <div className="w-full max-w-md mx-auto bg-white shadow-md rounded-lg p-6">
+    <div className="w-full max-w-md mx-auto bg-white shadow-md rounded-lg p-6 mt-5">
       <div className="mb-4">
         <textarea
           className="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
