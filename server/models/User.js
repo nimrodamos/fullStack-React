@@ -1,6 +1,7 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
-const userSchema = new mongoose.Schema({
+// בדוק אם המודל כבר קיים כדי למנוע OverwriteModelError
+const User = mongoose.models.User || mongoose.model('User', new mongoose.Schema({
     username: {
         type: String,
         required: true,
@@ -21,6 +22,6 @@ const userSchema = new mongoose.Schema({
         type: Date,
         default: Date.now
     }
-});
+}));
 
-module.exports =  mongoose.model('User', userSchema);;
+export default User;
