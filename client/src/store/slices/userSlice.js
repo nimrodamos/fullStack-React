@@ -1,41 +1,42 @@
 import { createSlice } from "@reduxjs/toolkit";
-// Importing `createSlice` from Redux Toolkit to simplify creating a Redux slice.
 
-/**
- * A Redux slice is a collection of Redux reducer logic and actions for a specific feature.
- * This slice manages the state related to the user (e.g., name and email).
- */
+// Redux slice for managing the user state
 const userSlice = createSlice({
-  // The name of this slice of the state. It's used to identify this slice in Redux dev tools and the Redux store.
   name: "user",
-
-  // The initial state of the `user` slice.
   initialState: {
-    name: "", // Default value for the `name` field (empty string).
-    email: "test", // Default value for the `email` field.
+    username: "", // Default value for `username`
+    email: "", // Default value for `email`
+    password: "", // Default value for `password`
+    createdAt: null, // Default value for `createdAt` (null for no date)
   },
-
-  // The `reducers` object defines functions (reducer logic) for updating the slice's state.
   reducers: {
     /**
-     * The `setUser` reducer updates the `name` and `email` fields in the user slice state.
-     *
-     * @param {Object} state - The current state of the `user` slice.
-     * @param {Object} action - The dispatched action containing the new data to update.
-     * @property {Object} action.payload - The data sent with the action, expected to have `name` and `email`.
+     * Update the user state with new user data
+     * @param {Object} state - The current state of the user slice
+     * @param {Object} action - The dispatched action containing user data
+     * @property {Object} action.payload - Should include `username`, `email`, `password`, and optionally `createdAt`
      */
     setUser: (state, action) => {
-      // Update the `name` field in the state using the data from `action.payload.name`.
-      state.name = action.payload.name;
-
-      // Update the `email` field in the state using the data from `action.payload.email`.
-      state.email = action.payload.email;
+      const { username, email, password, createdAt } = action.payload;
+      state.username = username || state.username;
+      state.email = email || state.email;
+      state.password = password || state.password;
+      state.createdAt = createdAt || state.createdAt;
+    },
+    /**
+     * Reset the user state to its initial values
+     */
+    resetUser: (state) => {
+      state.username = "";
+      state.email = "";
+      state.password = "";
+      state.createdAt = null;
     },
   },
 });
 
-// Export the `setUser` action creator, so it can be dispatched to update the state.
-export const { setUser } = userSlice.actions;
+// Export actions
+export const { setUser, resetUser } = userSlice.actions;
 
-// Export the reducer function to be added to the Redux store.
+// Export the reducer
 export default userSlice.reducer;

@@ -52,8 +52,8 @@ mongoose
 
 // Routes setup
 app.use("/users", userRoutes);
-app.use("/posts", authenticateToken, postRoutes); // Protect post routes
-app.use("/comments", authenticateToken, commentRoutes); // Protect comment routes
+app.use("/posts", postRoutes);
+app.use("/comments", commentRoutes);
 
 // Start server
 app.listen(5000, () => {

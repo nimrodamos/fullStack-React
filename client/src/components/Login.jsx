@@ -20,12 +20,15 @@ const Login = () => {
         password,
       });
 
-      const { token, message } = response.data; // Get JWT token and message
+      const { token, message, user } = response.data; // Get JWT token and message
+      console.log(user);
+
       Cookies.set("jwt", token); // Store JWT in cookies
 
       // עדכון Redux עם נתוני המשתמש (לפי השרת שלך, תוסיף כאן Fetch user data אם צריך)
       alert(message); // הצגת הודעת הצלחה למשתמש
       navigate("/home"); // Navigate to home page
+      dispatch(setUser(user));
     } catch (error) {
       const errorMessage =
         error.response?.data?.message || "Login failed. Please try again.";

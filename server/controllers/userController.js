@@ -56,7 +56,7 @@ export const login = async (req, res) => {
       { expiresIn: "1h" }
     );
 
-    res.status(200).json({ message: "Logged in successfully", token });
+    res.status(200).json({ message: "Logged in successfully", token, user });
   } catch (error) {
     console.error("Login error:", error.message); // לוג נוסף
     res.status(500).json({ message: error.message });
