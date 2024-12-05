@@ -1,3 +1,19 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+  --bg-color: #f3f4f6; /* Fundo claro */
+  --text-color: #111827; /* Texto claro */
+}
+
+.dark {
+  --bg-color: #1f2937; /* Fundo escuro */
+  --text-color: #f9fafb; /* Texto claro */
+}
+
+body {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
