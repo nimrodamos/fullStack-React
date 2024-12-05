@@ -6,7 +6,7 @@ import { FaSun, FaMoon } from "react-icons/fa";
 const menuLinks = [
   { to: "/Home", label: "Home" },
   { to: "/about", label: "About" },
-  { to: "/contact", label: "Contact" },
+
   { to: "/", label: "LogOut" },
 ];
 
