@@ -12,6 +12,7 @@ const Signup = () => {
     email: "",
     password: "",
   });
+  const [error, setError] = useState("");
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -22,18 +23,29 @@ const Signup = () => {
   };
 
   const handleSubmit = async (e) => {
+    e.preventDefault();
     try {
-      e.preventDefault();
       const { data } = await axios.post(
-        "http://localhost:3000/sign-up",
+        "http://localhost:5000/users/signup",
         formData
       );
-      console.log(data.you);
-      dispatch(setUser(data.you));
-      console.log("dispatched!");
+
+      // הצגת הודעת הצלחה
+      alert(data.message);
+
+      // עדכון המשתמש ב-Redux (בשלב זה אין `data.you` מהשרת שלך)
+      dispatch(setUser({ username: formData.username, email: formData.email }));
+
+      // מעבר לדף הבית
       navigate("/home");
     } catch (error) {
-      console.error(error);
+      const errorMessage =
+        error.response?.data?.message ||
+        (error.response?.data?.errors &&
+          error.response.data.errors.map((err) => err.msg).join(", ")) ||
+        "Signup failed. Please try again.";
+      console.error("Signup error:", errorMessage);
+      setError(errorMessage); // הצגת הודעת שגיאה למשתמש
     }
   };
 
@@ -41,6 +53,7 @@ const Signup = () => {
     <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-r from-purple-400 via-pink-500 to-red-500">
       <div className="bg-white p-8 rounded shadow-md w-full max-w-md">
         <h2 className="text-2xl font-bold text-center mb-6">Signup</h2>
+        {error && <p className="text-red-500 text-center mb-4">{error}</p>}
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label
@@ -95,7 +108,7 @@ const Signup = () => {
           </div>
           <button
             type="submit"
-            className="w-full bg-project-color text-white py-2 px-4 rounded  transition-colors"
+            className="w-full bg-project-color text-white py-2 px-4 rounded transition-colors"
           >
             Signup
           </button>

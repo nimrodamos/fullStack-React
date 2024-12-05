@@ -10,36 +10,27 @@ const Login = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
-  const handleFetch = async () => {
-    try {
-      const jwt = Cookies.get("jwt");
-      const { data } = await axios.get("http://localhost:3000/users/get-self", {
-        headers: {
-          Authorization: `Bearer ${jwt}`,
-        },
-      });
-      console.log(data);
-      dispatch(setUser(data));
-    } catch (error) {
-      console.error("Error fetching user data:", error);
-    }
-  };
+  const [error, setError] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post(
-        "http://localhost:3000/sign-in",
-        { email, password },
-        { withCredentials: true }
-      );
-      console.log("Response:", response.data);
-      await handleFetch(); // קריאה ל-`handleFetch` לאחר התחברות
-      navigate("/home"); // ניווט לדף הבית לאחר הצלחה
+      const response = await axios.post("http://localhost:5000/users/login", {
+        email,
+        password,
+      });
+
+      const { token, message } = response.data; // Get JWT token and message
+      Cookies.set("jwt", token); // Store JWT in cookies
+
+      // עדכון Redux עם נתוני המשתמש (לפי השרת שלך, תוסיף כאן Fetch user data אם צריך)
+      alert(message); // הצגת הודעת הצלחה למשתמש
+      navigate("/home"); // Navigate to home page
     } catch (error) {
-      console.error("Error during sign-in:", error);
-      alert("Error during sign-in:");
+      const errorMessage =
+        error.response?.data?.message || "Login failed. Please try again.";
+      console.error("Error during sign-in:", errorMessage);
+      setError(errorMessage); // Set error for UI
     }
   };
 
@@ -47,6 +38,7 @@ const Login = () => {
     <div className="flex items-center justify-center bg-gray-100">
       <div className="bg-gray-100 bg-opacity-70 backdrop-blur-md rounded shadow-md max-w-md w-full p-8">
         <h2 className="text-2xl font-bold text-center mb-6">Login</h2>
+        {error && <p className="text-red-500 text-center mb-4">{error}</p>}
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label
@@ -82,7 +74,7 @@ const Login = () => {
           </div>
           <button
             type="submit"
-            className="w-full bg-project-color text-white py-2 px-4 rounded  transition-colors "
+            className="w-full bg-project-color text-white py-2 px-4 rounded transition-colors"
           >
             Login
           </button>
