@@ -1,35 +1,50 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useSelector } from "react-redux";
+import Cookies from "js-cookie"; // Import js-cookie to access the token
 
-const AddPost = ({ refreshPosts }) => {
+const AddPost = ({ onPostAdded }) => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const user = useSelector((state) => state.user);
-  console.log("user", user);
 
   const handlePostSubmit = async () => {
+    if (!user || !user._id) {
+      alert("You must be logged in to add a post.");
+      return;
+    }
+
     if (!title || !content) {
       alert("Both title and content are required.");
       return;
     }
 
     try {
-      await axios.post("http://localhost:5000/posts", {
-        title,
-        content,
-        authorId: user._id, // ID of an existing user
-      });
+      const token = Cookies.get("jwt"); // Retrieve the JWT from cookies
 
-      alert("Post created successfully!");
+      const response = await axios.post(
+        "http://localhost:5000/posts",
+        {
+          title,
+          content,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`, // Add the token to the Authorization header
+          },
+        }
+      );
+
+      alert("Post added successfully!");
       setTitle("");
       setContent("");
 
-      // Refresh posts after adding the new one
-      if (refreshPosts) refreshPosts();
+      if (onPostAdded) {
+        onPostAdded(response.data); // Notify parent about the new post
+      }
     } catch (error) {
-      console.error("Error creating post:", error.message);
-      alert("Failed to create the post.");
+      console.error("Error adding post:", error.message);
+      alert("Failed to add the post.");
     }
   };
 

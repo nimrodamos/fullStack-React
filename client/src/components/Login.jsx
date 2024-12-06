@@ -26,9 +26,9 @@ const Login = () => {
       Cookies.set("jwt", token); // Store JWT in cookies
 
       // עדכון Redux עם נתוני המשתמש (לפי השרת שלך, תוסיף כאן Fetch user data אם צריך)
-      alert(message); // הצגת הודעת הצלחה למשתמש
-      navigate("/home"); // Navigate to home page
+      // alert(message); // הצגת הודעת הצלחה למשתמש
       dispatch(setUser(user));
+      navigate("/home"); // Navigate to home page
     } catch (error) {
       const errorMessage =
         error.response?.data?.message || "Login failed. Please try again.";

@@ -4,7 +4,10 @@ import User from "../models/User.js";
 // Get all posts
 export const getPosts = async (req, res) => {
   try {
-    const posts = await Post.find(); // Retrieve all posts
+    // Retrieve all posts and populate the author details
+    const posts = await Post.find()
+      .populate("authorId", "username email")
+      .exec();
     res.status(200).json(posts); // Return posts
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -13,15 +16,27 @@ export const getPosts = async (req, res) => {
 
 // Create a new post
 export const createPost = async (req, res) => {
-  const { title, content, authorId } = req.body;
+  const { title, content } = req.body;
 
   try {
-    const user = await User.findById(authorId);
+    // Verify that the user is authenticated
+    if (!req.user || !req.user._id) {
+      return res.status(401).json({ message: "Unauthorized. No user found." });
+    }
+
+    // Fetch the authenticated user from the database
+    const user = await User.findById(req.user._id);
     if (!user) {
       return res.status(400).json({ message: "User not found" });
     }
 
-    const post = new Post({ title, content, authorId });
+    // Create a new post with the authenticated user's ID as authorId
+    const post = new Post({
+      title,
+      content,
+      authorId: req.user._id, // Use `_id` from authenticated user
+    });
+
     await post.save();
     res.status(201).json(post); // Return created post
   } catch (error) {
@@ -35,14 +50,15 @@ export const getPostById = async (req, res) => {
 
   try {
     const post = await Post.findById(postId)
+      .populate("authorId", "username email") // Populate author details
       .populate("comments") // Populate comments
-      .exec(); // .exec() מוסיף תמיכה לאסינכרוניות
+      .exec();
 
     if (!post) {
       return res.status(404).json({ message: "Post not found" });
     }
 
-    res.status(200).json(post); // Return post with comments
+    res.status(200).json(post); // Return post with comments and author details
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

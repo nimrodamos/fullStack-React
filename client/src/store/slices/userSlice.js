@@ -4,33 +4,31 @@ import { createSlice } from "@reduxjs/toolkit";
 const userSlice = createSlice({
   name: "user",
   initialState: {
-    username: "", // Default value for `username`
-    email: "", // Default value for `email`
-    password: "", // Default value for `password`
-    createdAt: null, // Default value for `createdAt` (null for no date)
+    _id: "",
+    username: "",
+    email: "",
+    createdAt: null,
   },
   reducers: {
     /**
      * Update the user state with new user data
      * @param {Object} state - The current state of the user slice
      * @param {Object} action - The dispatched action containing user data
-     * @property {Object} action.payload - Should include `username`, `email`, `password`, and optionally `createdAt`
+     * @property {Object} action.payload - Should include `_id`, `username`, `email`, and optionally `createdAt`
      */
     setUser: (state, action) => {
-      const { username, email, password, createdAt } = action.payload;
-      state.username = username || state.username;
-      state.email = email || state.email;
-      state.password = password || state.password;
-      state.createdAt = createdAt || state.createdAt;
+      return { ...state, ...action.payload }; // Merge the current state with the new user data
     },
     /**
      * Reset the user state to its initial values
      */
-    resetUser: (state) => {
-      state.username = "";
-      state.email = "";
-      state.password = "";
-      state.createdAt = null;
+    resetUser: () => {
+      return {
+        _id: "",
+        username: "",
+        email: "",
+        createdAt: null,
+      };
     },
   },
 });
