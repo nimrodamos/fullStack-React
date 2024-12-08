@@ -44,7 +44,7 @@ function App() {
           <Route path="/About" element={<AboutPage />}></Route>
           <Route path="/Login" element={<Login />} />
           <Route path="/Signup" element={<Signup />} />
-          <Route path="/Profile" element={<ProfilePage />} />
+          <Route path="/profile/:username" element={<ProfilePage />} />
         </Routes>
       </BrowserRouter>
     </div>

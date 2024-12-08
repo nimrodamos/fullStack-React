@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { Link } from "react-router-dom";
 
 const Posts = () => {
   const [posts, setPosts] = useState([]);
@@ -45,7 +46,16 @@ const Posts = () => {
         >
           <div className="p-6">
             <h2 className="text-2xl font-bold mb-2">
-              {post.authorId?.username || "Unknown"}{" "}
+              {post.authorId?.username ? (
+                <Link
+                  to={`/profile/${post.authorId.username}`}
+                  className="text-blue-500 hover:underline"
+                >
+                  {post.authorId.username}
+                </Link>
+              ) : (
+                "Unknown"
+              )}
             </h2>
 
             <p className="mb-4 text-gray-800">
