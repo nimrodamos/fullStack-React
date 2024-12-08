@@ -116,8 +116,9 @@ const Posts = () => {
       {posts.map((post) => (
         <div
           key={post._id}
-          className="bg-gray-100 dark:bg-gray-800 shadow-lg rounded-lg mb-6 border border-gray-300 dark:border-gray-700"
+          className="bg-gray-200 dark:bg-gray-800 shadow-lg rounded-lg mb-6 border border-gray-300 dark:border-gray-700 overflow-hidden hover:shadow-2xl transition-shadow duration-300"
         >
+          <div className="h-8 bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 dark:from-pink-700 dark:via-purple-900 dark:to-blue-800"></div>
           <div className="p-6">
             <h2 className="text-2xl font-bold mb-2 text-gray-800 dark:text-white">
               {post.authorId?.username ? (
@@ -181,7 +182,10 @@ const Posts = () => {
                   )}
                 </ul>
                 <button
-                  onClick={() => setShowLikes(null)}
+                  onClick={() => {
+                    setShowLikes(null);
+                    setLikedUsers([]);
+                  }}
                   className="mt-2 text-sm text-red-500 hover:underline"
                 >
                   Close
