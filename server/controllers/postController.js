@@ -4,11 +4,13 @@ import User from "../models/User.js";
 // Get all posts
 export const getPosts = async (req, res) => {
   try {
-    // Retrieve all posts and populate the author details
     const posts = await Post.find()
       .populate("authorId", "username email")
-      .exec();
-    res.status(200).json(posts); // Return posts
+      .populate({
+        path: "comments",
+        populate: { path: "authorId", select: "username" },
+      });
+    res.status(200).json(posts);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
