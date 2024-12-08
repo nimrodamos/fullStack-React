@@ -20,20 +20,19 @@ const Login = () => {
         password,
       });
 
-      const { token, message, user } = response.data; // Get JWT token and message
+      const { token, message, user } = response.data;
       console.log(user);
 
-      Cookies.set("jwt", token); // Store JWT in cookies
+      Cookies.set("jwt", token);
 
-      // עדכון Redux עם נתוני המשתמש (לפי השרת שלך, תוסיף כאן Fetch user data אם צריך)
       // alert(message); // הצגת הודעת הצלחה למשתמש
       dispatch(setUser(user));
-      navigate("/home"); // Navigate to home page
+      navigate("/home");
     } catch (error) {
       const errorMessage =
         error.response?.data?.message || "Login failed. Please try again.";
       console.error("Error during sign-in:", errorMessage);
-      setError(errorMessage); // Set error for UI
+      setError(errorMessage);
     }
   };
 

@@ -30,13 +30,10 @@ const Signup = () => {
         formData
       );
 
-      // הצגת הודעת הצלחה
       alert(data.message);
 
-      // עדכון המשתמש ב-Redux (בשלב זה אין `data.you` מהשרת שלך)
       dispatch(setUser({ username: formData.username, email: formData.email }));
 
-      // מעבר לדף הבית
       navigate("/");
     } catch (error) {
       const errorMessage =
@@ -45,7 +42,7 @@ const Signup = () => {
           error.response.data.errors.map((err) => err.msg).join(", ")) ||
         "Signup failed. Please try again.";
       console.error("Signup error:", errorMessage);
-      setError(errorMessage); // הצגת הודעת שגיאה למשתמש
+      setError(errorMessage);
     }
   };
 

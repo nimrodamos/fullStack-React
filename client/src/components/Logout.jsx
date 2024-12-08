@@ -9,13 +9,10 @@ const Logout = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Remove JWT from cookies
     Cookies.remove("jwt");
 
-    // Dispatch Redux action to reset user state
-    dispatch(logoutUser()); // פעולה שמעדכנת את Redux, אם רלוונטי
+    dispatch(logoutUser());
 
-    // Redirect to the welcome or login page
     navigate("/");
   }, [dispatch, navigate]);
 

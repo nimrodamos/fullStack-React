@@ -13,7 +13,7 @@ const WelcomePage = () => {
         <img
           src="https://cdn-icons-png.flaticon.com/512/1626/1626179.png"
           alt="Description"
-          className="w-40 h-40 rounded-full object-cover mb-6" /* Circular and proportional image */
+          className="w-40 h-40 rounded-full object-cover mb-6"
         />
         <h2>{user?.email || ""}</h2>
       </div>

@@ -34,9 +34,9 @@ export const createComment = createAsyncThunk(
 const commentsSlice = createSlice({
   name: "comments",
   initialState: {
-    comments: [], // All comments for a specific post
-    loading: false, // Loading state
-    error: null, // Error state
+    comments: [],
+    loading: false,
+    error: null,
   },
   reducers: {},
   extraReducers: (builder) => {
@@ -48,11 +48,11 @@ const commentsSlice = createSlice({
       })
       .addCase(fetchCommentsByPostId.fulfilled, (state, action) => {
         state.loading = false;
-        state.comments = action.payload; // Set fetched comments
+        state.comments = action.payload;
       })
       .addCase(fetchCommentsByPostId.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload; // Set error
+        state.error = action.payload;
       })
       // Create comment
       .addCase(createComment.pending, (state) => {
@@ -61,11 +61,11 @@ const commentsSlice = createSlice({
       })
       .addCase(createComment.fulfilled, (state, action) => {
         state.loading = false;
-        state.comments.push(action.payload); // Add new comment to the list
+        state.comments.push(action.payload);
       })
       .addCase(createComment.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload; // Set error
+        state.error = action.payload;
       });
   },
 });

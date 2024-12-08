@@ -35,7 +35,7 @@ const AddPost = ({ onPostAdded }) => {
         },
         {
           headers: {
-            Authorization: `Bearer ${token}`, // Fixed template literal syntax
+            Authorization: `Bearer ${token}`,
           },
         }
       );
