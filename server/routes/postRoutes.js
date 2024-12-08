@@ -5,6 +5,8 @@ import {
   getPostById,
   updatePost,
   deletePost,
+  togglePostLike,
+  getLikedUsers,
 } from "../controllers/postController.js";
 import { authenticateToken } from "../middleware/authMiddleware.js"; // Import the middleware
 
@@ -24,5 +26,9 @@ router.put("/:postId", authenticateToken, updatePost);
 
 // DELETE /posts/:postId - Delete a post by its ID (protected)
 router.delete("/:postId", authenticateToken, deletePost);
+
+router.patch("/:postId/toggle-like", togglePostLike);
+
+router.get("/:postId/likes", getLikedUsers);
 
 export default router;
