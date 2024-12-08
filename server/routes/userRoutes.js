@@ -5,6 +5,7 @@ import {
   getUserByDisplayName,
   getAllUsers,
   getUserProfile,
+  getUserProfileByUsername,
 } from "../controllers/userController.js";
 import { body } from "express-validator";
 import { authenticateToken } from "../middleware/authMiddleware.js"; // או הנתיב שבו הפונקציה נמצאת
@@ -30,4 +31,7 @@ router.get("/name/:displayName", getUserByDisplayName);
 router.get("/", getAllUsers);
 
 router.get("/me", authenticateToken, getUserProfile);
+
+router.get("/profile/:username", getUserProfileByUsername);
+
 export default router;

@@ -1,4 +1,5 @@
 import User from "../models/User.js";
+import Post from "../models/Post.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { validationResult } from "express-validator";
@@ -99,5 +100,34 @@ export const getUserProfile = async (req, res) => {
     res.status(200).json(user);
   } catch (error) {
     res.status(500).json({ message: "Failed to fetch user profile." });
+  }
+};
+
+export const getUserProfileByUsername = async (req, res) => {
+  const { username } = req.params; // קבלת שם המשתמש מהנתיב
+
+  try {
+    // חיפוש המשתמש לפי שם משתמש
+    const user = await User.findOne({ username });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // חיפוש הפוסטים שכתב המשתמש
+    const posts = await Post.find({ authorId: user._id });
+
+    // החזרת המידע
+    res.status(200).json({
+      user: {
+        username: user.username,
+        email: user.email,
+        createdAt: user.createdAt,
+        bio: user.bio || "No bio available",
+      },
+      posts,
+    });
+  } catch (error) {
+    // טיפול בשגיאה
+    res.status(500).json({ message: error.message });
   }
 };
