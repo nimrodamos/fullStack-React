@@ -132,14 +132,16 @@ export const getUserProfileByUsername = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    const posts = await Post.find({ authorId: user._id });
+    const posts = await Post.find({ authorId: user._id }).populate(
+      "authorId",
+      "username email"
+    );
 
     res.status(200).json({
       user: {
         username: user.username,
         email: user.email,
         createdAt: user.createdAt,
-        bio: user.bio || "No bio available",
       },
       posts,
     });
