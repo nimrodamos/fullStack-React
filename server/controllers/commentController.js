@@ -51,8 +51,11 @@ export const createComment = async (req, res) => {
     }
 
     // Create and save the comment
-    const comment = new Comment({ postId, text, authorId });
+    let comment = new Comment({ postId, text, authorId });
     await comment.save();
+
+    // Populate username
+    comment = await comment.populate("authorId", "username");
 
     // Add comment reference to the post
     await Post.findByIdAndUpdate(postId, { $push: { comments: comment._id } });

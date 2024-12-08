@@ -45,6 +45,16 @@ const Navbar = () => {
     document.documentElement.classList.toggle("dark", newMode);
   }, [darkMode]);
 
+  // Apply the correct dark mode class on initial load
+  useEffect(() => {
+    const isDark = localStorage.getItem("darkMode") === "true";
+    if (isDark) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  }, []);
+
   const handleLogout = () => {
     Cookies.remove("jwt");
     dispatch(resetUser());
@@ -139,7 +149,7 @@ const Navbar = () => {
             <MenuItems onClick={closeMenu} />
             <button
               onClick={handleLogout}
-              className="text-white text-lg transition-transform duration-200 hover:text-gray-300 w-full text-left mt-4"
+              className="text-white text-lg transition-transform duration-200 hover:text-gray-300 w-full text-center mt-4"
             >
               Logout
             </button>
