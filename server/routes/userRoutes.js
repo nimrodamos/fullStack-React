@@ -6,6 +6,7 @@ import {
   getAllUsers,
   getUserProfile,
   getUserProfileByUsername,
+  searchUsers,
 } from "../controllers/userController.js";
 import { body } from "express-validator";
 import { authenticateToken } from "../middleware/authMiddleware.js"; // או הנתיב שבו הפונקציה נמצאת
@@ -33,5 +34,7 @@ router.get("/", getAllUsers);
 router.get("/me", authenticateToken, getUserProfile);
 
 router.get("/profile/:username", getUserProfileByUsername);
+
+router.get("/search", searchUsers);
 
 export default router;

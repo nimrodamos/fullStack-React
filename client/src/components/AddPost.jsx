@@ -14,7 +14,7 @@ const AddPost = ({ onPostAdded }) => {
       return;
     }
 
-    if (!title || !content) {
+    if (!title.trim() || !content.trim()) {
       alert("Both title and content are required.");
       return;
     }
@@ -30,7 +30,7 @@ const AddPost = ({ onPostAdded }) => {
         },
         {
           headers: {
-            Authorization: `Bearer ${token}`, // Add the token to the Authorization header
+            Authorization: `Bearer ${token}`, // Correct syntax for the token
           },
         }
       );
@@ -44,29 +44,31 @@ const AddPost = ({ onPostAdded }) => {
       }
     } catch (error) {
       console.error("Error adding post:", error.message);
-      alert("Failed to add the post.");
+      alert("Failed to add the post. Please try again.");
     }
   };
 
   return (
-    <div className="max-w-md mx-auto bg-white shadow-md rounded-lg p-4">
-      <h1 className="text-2xl font-bold mb-4">Add New Post</h1>
+    <div className="max-w-md mx-auto bg-gray-100 dark:bg-gray-800 shadow-md rounded-lg p-4">
+      <h1 className="text-2xl font-bold mb-4 text-gray-800 dark:text-white">
+        Add New Post
+      </h1>
       <input
         type="text"
         placeholder="Post Title"
         value={title}
         onChange={(e) => setTitle(e.target.value)}
-        className="w-full p-2 mb-3 border border-gray-300 rounded"
+        className="w-full p-2 mb-3 border border-gray-300 dark:border-gray-600 rounded bg-gray-50 dark:bg-gray-700 text-gray-800 dark:text-gray-300"
       />
       <textarea
         placeholder="Post Content"
         value={content}
         onChange={(e) => setContent(e.target.value)}
-        className="w-full p-2 mb-3 border border-gray-300 rounded"
+        className="w-full p-2 mb-3 border border-gray-300 dark:border-gray-600 rounded bg-gray-50 dark:bg-gray-700 text-gray-800 dark:text-gray-300"
       />
       <button
         onClick={handlePostSubmit}
-        className="bg-blue-500 text-white px-4 py-2 rounded"
+        className="bg-blue-500 dark:bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-600 dark:hover:bg-blue-700"
       >
         POST
       </button>
