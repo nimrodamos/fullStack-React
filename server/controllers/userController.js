@@ -31,35 +31,31 @@ export const login = async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    // בדוק אם המשתמש קיים
     const user = await User.findOne({ email });
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // בדוק אם הסיסמה נכונה
     const isPasswordCorrect = await bcrypt.compare(password, user.password);
     if (!isPasswordCorrect) {
       return res.status(401).json({ message: "Invalid credentials" });
     }
 
-    // בדוק אם המפתח הסודי מוגדר
     if (!process.env.JWT_SECRET_KEY) {
       throw new Error(
         "JWT_SECRET_KEY is not defined in the environment variables"
       );
     }
 
-    // צור JWT
     const token = jwt.sign(
-      { _id: user._id, username: user.username }, // Update to `_id`
+      { _id: user._id, username: user.username },
       process.env.JWT_SECRET_KEY,
       { expiresIn: "1h" }
     );
 
     res.status(200).json({ message: "Logged in successfully", token, user });
   } catch (error) {
-    console.error("Login error:", error.message); // לוג נוסף
+    console.error("Login error:", error.message);
     res.status(500).json({ message: error.message });
   }
 };
@@ -80,6 +76,30 @@ export const getUserByDisplayName = async (req, res) => {
   }
 };
 
+// פונקציה לחיפוש משתמשים לפי שם משתמש
+export const searchUsersByUsername = async (req, res) => {
+  try {
+    const { username } = req.query; // קבלת הפרמטר
+    if (!username) {
+      return res
+        .status(400)
+        .json({ message: "Username query parameter is required." });
+    }
+
+    // חיפוש משתמשים לפי username (case-insensitive)
+    const users = await User.find({
+      username: { $regex: username, $options: "i" },
+    }).select("_id username email");
+
+    res.status(200).json(users);
+  } catch (error) {
+    console.error("Error searching users:", error.message);
+    res
+      .status(500)
+      .json({ message: "Server error while searching for users." });
+  }
+};
+
 // הצגת כל המשתמשים
 export const getAllUsers = async (req, res) => {
   try {
@@ -93,7 +113,7 @@ export const getAllUsers = async (req, res) => {
 // קבלת פרופיל המשתמש (מוגן עם טוקן)
 export const getUserProfile = async (req, res) => {
   try {
-    const user = await User.findById(req.user._id).select("-password"); // Use `_id`
+    const user = await User.findById(req.user._id).select("-password");
     if (!user) {
       return res.status(404).json({ message: "User not found." });
     }
@@ -104,19 +124,16 @@ export const getUserProfile = async (req, res) => {
 };
 
 export const getUserProfileByUsername = async (req, res) => {
-  const { username } = req.params; // קבלת שם המשתמש מהנתיב
+  const { username } = req.params;
 
   try {
-    // חיפוש המשתמש לפי שם משתמש
     const user = await User.findOne({ username });
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // חיפוש הפוסטים שכתב המשתמש
     const posts = await Post.find({ authorId: user._id });
 
-    // החזרת המידע
     res.status(200).json({
       user: {
         username: user.username,
@@ -127,7 +144,23 @@ export const getUserProfileByUsername = async (req, res) => {
       posts,
     });
   } catch (error) {
-    // טיפול בשגיאה
+    res.status(500).json({ message: error.message });
+  }
+};
+
+export const searchUsers = async (req, res) => {
+  const { query } = req.query; // אחזור הפרמטר query מהבקשה
+
+  if (!query) {
+    return res.status(400).json({ message: "Query parameter is required" });
+  }
+
+  try {
+    const users = await User.find({
+      username: { $regex: query, $options: "i" },
+    }); // חיפוש מבוסס regex
+    res.status(200).json(users);
+  } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };

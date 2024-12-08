@@ -5,6 +5,7 @@ import { FaSun, FaMoon } from "react-icons/fa";
 import Cookies from "js-cookie";
 import { useDispatch } from "react-redux";
 import { resetUser } from "../store/slices/userSlice";
+import axios from "axios";
 
 const menuLinks = [
   { to: "/Home", label: "Home" },
@@ -35,6 +36,8 @@ const Navbar = () => {
   const [darkMode, setDarkMode] = useState(
     () => localStorage.getItem("darkMode") === "true"
   );
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -45,7 +48,6 @@ const Navbar = () => {
     document.documentElement.classList.toggle("dark", newMode);
   }, [darkMode]);
 
-  // Apply the correct dark mode class on initial load
   useEffect(() => {
     const isDark = localStorage.getItem("darkMode") === "true";
     if (isDark) {
@@ -69,27 +71,68 @@ const Navbar = () => {
     setIsHovered(false);
   }, []);
 
+  const handleSearch = async (e) => {
+    e.preventDefault();
+    if (!searchQuery.trim()) {
+      setSearchResults([]);
+      return;
+    }
+
+    try {
+      const response = await axios.get("http://localhost:5000/users/search", {
+        params: { query: searchQuery },
+      });
+      setSearchResults(response.data);
+    } catch (error) {
+      console.error("Error fetching search results:", error.message);
+      setSearchResults([]);
+    }
+  };
+
   return (
     <nav className="bg-gradient-to-r from-pink-500 to-purple-500 text-white p-4 shadow-md sticky top-0 z-50">
       <div className="flex items-center justify-between w-full">
-        {/* Logo */}
         <h1 className="text-2xl font-bold flex-shrink-0 pl-4 md:pl-0">
           Social Media
         </h1>
 
-        {/* Search Bar */}
-        <form className="flex items-center bg-gray-200 rounded-full px-4 py-2 w-full max-w-md mx-4 md:mx-auto dark:bg-gray-700">
+        <form
+          onSubmit={handleSearch}
+          className="flex items-center bg-gray-200 rounded-full px-4 py-2 w-full max-w-md mx-4 md:mx-auto dark:bg-gray-700 relative"
+        >
           <input
             type="text"
-            placeholder="Search..."
+            placeholder="Search for users..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
             className="bg-transparent text-gray-800 dark:text-gray-300 w-full outline-none px-2"
           />
-          <button type="submit" className="text-gray-500 dark:text-gray-300">
+          <button
+            type="submit"
+            className="text-gray-500 dark:text-gray-300"
+            aria-label="Search"
+          >
             <FiSearch className="text-xl" />
           </button>
+          {searchResults.length > 0 && (
+            <div className="absolute top-full left-0 w-full bg-white dark:bg-gray-800 shadow-lg rounded mt-2 z-50">
+              <ul>
+                {searchResults.map((user) => (
+                  <li
+                    key={user._id}
+                    className="p-2 border-b border-gray-200 dark:border-gray-700 hover:bg-gray-200 dark:hover:bg-gray-700 cursor-pointer"
+                    onClick={() => navigate(`/profile/${user.username}`)}
+                  >
+                    <span className="font-medium text-gray-800 dark:text-gray-300">
+                      {user.username}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </form>
 
-        {/* Menu Items, Logout, and Dark Mode */}
         <div className="hidden md:flex items-center space-x-6 pr-4 md:pr-0">
           <MenuItems />
           <button
@@ -111,9 +154,7 @@ const Navbar = () => {
           </div>
         </div>
 
-        {/* Hamburger Menu for Mobile */}
         <div className="md:hidden flex items-center space-x-4">
-          {/* Dark Mode Toggle */}
           <div
             className="cursor-pointer text-2xl transition-colors duration-200"
             onClick={toggleDarkMode}
@@ -125,8 +166,6 @@ const Navbar = () => {
               <FaMoon className="text-gray-800" />
             )}
           </div>
-
-          {/* Menu Icon */}
           <FiMenu
             className="text-white text-3xl cursor-pointer"
             aria-label="Menu"
@@ -134,8 +173,6 @@ const Navbar = () => {
           />
         </div>
       </div>
-
-      {/* Sidebar for Mobile */}
       {isHovered && (
         <>
           <div
