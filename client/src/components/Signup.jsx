@@ -37,7 +37,7 @@ const Signup = () => {
       dispatch(setUser({ username: formData.username, email: formData.email }));
 
       // מעבר לדף הבית
-      navigate("/home");
+      navigate("/");
     } catch (error) {
       const errorMessage =
         error.response?.data?.message ||
