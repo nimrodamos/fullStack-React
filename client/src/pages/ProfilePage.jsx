@@ -4,54 +4,87 @@ import axios from "axios";
 import Navbar from "../components/Navbar";
 
 const ProfilePage = () => {
-  const { username } = useParams(); // Access the `username` from the URL
-  const [user, setUser] = useState(null); // State to hold user data
-  const [error, setError] = useState(null); // State to handle errors
-  const [loading, setLoading] = useState(true); // State to handle loading
+  const { username } = useParams(); // קבלת שם המשתמש מה-URL
+  const [user, setUser] = useState(null); // מידע על המשתמש
+  const [posts, setPosts] = useState([]); // רשימת הפוסטים
+  const [error, setError] = useState(null); // שגיאות
+  const [loading, setLoading] = useState(true); // מצב טעינה
 
   useEffect(() => {
-    // Fetch user details based on the username
-    const fetchUser = async () => {
+    // שליפת המידע
+    const fetchProfile = async () => {
       try {
         setLoading(true);
         const response = await axios.get(
-          `http://localhost:5000/users/name/${username}`
+          `http://localhost:5000/users/profile/${username}`
         );
-        setUser(response.data); // Set user data
+
+        setUser(response.data.user); // עדכון מצב המשתמש
+        setPosts(response.data.posts); // עדכון מצב הפוסטים
       } catch (err) {
-        setError("User not found or an error occurred.");
+        setError("Failed to fetch profile.");
       } finally {
         setLoading(false);
       }
     };
 
-    fetchUser();
+    fetchProfile();
   }, [username]);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <div className="text-center text-gray-500">Loading...</div>;
   }
 
   if (error) {
-    return <div className="text-red-500">{error}</div>;
+    return <div className="text-center text-red-500">{error}</div>;
+  }
+
+  if (!user) {
+    return <div className="text-center text-gray-600">User not found.</div>;
   }
 
   return (
     <div>
       <Navbar />
       <div className="max-w-4xl mx-auto p-4">
-        <h1 className="text-3xl font-bold mb-6">{user.username}'s Profile</h1>
-        <div className="bg-white shadow-lg rounded-lg p-6">
+        <header className="text-center mb-6">
+          <h1 className="text-4xl font-bold">{user.username}'s Profile</h1>
+        </header>
+
+        <section className="bg-white shadow-lg rounded-lg p-6 mb-6">
           <h2 className="text-2xl font-semibold mb-4">About {user.username}</h2>
           <p className="mb-4 text-gray-800">
             <strong>Email:</strong> {user.email}
           </p>
           <p className="mb-4 text-gray-800">
             <strong>Joined:</strong>{" "}
-            {new Date(user.createdAt).toLocaleDateString()}
+            {new Date(user.createdAt).toLocaleDateString("en-US", {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            })}
           </p>
-          <p className="text-gray-600">{user.bio || "No bio available."}</p>
-        </div>
+          <p className="text-gray-600">{user.bio}</p>
+        </section>
+
+        <section className="bg-white shadow-lg rounded-lg p-6">
+          <h2 className="text-2xl font-semibold mb-4">
+            Posts by {user.username}
+          </h2>
+          {posts.length > 0 ? (
+            posts.map((post) => (
+              <article
+                key={post._id}
+                className="border-b border-gray-300 pb-4 mb-4 last:border-none"
+              >
+                <h3 className="text-xl font-bold">{post.title}</h3>
+                <p className="text-gray-700">{post.content}</p>
+              </article>
+            ))
+          ) : (
+            <p className="text-gray-600 text-center">No posts available.</p>
+          )}
+        </section>
       </div>
     </div>
   );
