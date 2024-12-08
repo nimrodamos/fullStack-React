@@ -133,13 +133,11 @@ const Posts = () => {
               )}
             </h2>
 
-            <p className="mb-4 text-gray-800 dark:text-gray-300">
-              {post.content || "No content available"}
-            </p>
-
-            <div className="text-sm text-gray-500 dark:text-gray-400">
+            <div className="mb-4 text-gray-800 dark:text-gray-300 font-bold">
               {post.title || "Untitled Post"}
             </div>
+
+            <p className="text-sm">{post.content || "No content available"}</p>
 
             <div className="flex items-center mt-4">
               <button
