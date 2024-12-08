@@ -4,8 +4,8 @@ import { configureStore } from "@reduxjs/toolkit";
 import postsReducer from "./slices/postsSlice";
 
 import userReducer from "./slices/userSlice.js";
-// Import the `userReducer` from the user slice file.
-// This will handle state updates for the "user" slice of the application state.
+
+import commentsReducer from "./slices/commentsSlice";
 
 /**
  * The `store` is the centralized location for managing the state of your application.
@@ -16,6 +16,7 @@ export const store = configureStore({
   reducer: {
     user: userReducer, // The `user` slice of the state is managed by `userReducer`.
     posts: postsReducer,
+    comments: commentsReducer,
   },
 });
 
