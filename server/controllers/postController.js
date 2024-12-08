@@ -94,14 +94,84 @@ export const deletePost = async (req, res) => {
   const { postId } = req.params;
 
   try {
-    const post = await Post.findByIdAndDelete(postId);
+    const post = await Post.findById(postId);
 
     if (!post) {
       return res.status(404).json({ message: "Post not found" });
     }
 
+    // Optionally: Check if the requesting user is the author
+    if (post.authorId.toString() !== req.user._id.toString()) {
+      return res
+        .status(403)
+        .json({ message: "You are not authorized to delete this post" });
+    }
+
+    await Post.findByIdAndDelete(postId); // Delete the post
     res.status(200).json({ message: "Post deleted successfully" });
   } catch (error) {
+    console.error("Error deleting post:", error);
+    res
+      .status(500)
+      .json({ message: "An error occurred while deleting the post" });
+  }
+};
+
+// postController.js
+export const togglePostLike = async (req, res) => {
+  const { postId } = req.params;
+  const { userId } = req.body;
+
+  try {
+    const post = await Post.findById(postId);
+
+    if (!post) {
+      return res.status(404).json({ message: "Post not found." });
+    }
+
+    if (!post.likedBy) {
+      post.likedBy = []; // Initialize if not present
+    }
+
+    const userIndex = post.likedBy.indexOf(userId);
+
+    if (userIndex === -1) {
+      // Add like
+      post.likedBy.push(userId);
+    } else {
+      // Remove like
+      post.likedBy.splice(userIndex, 1);
+    }
+
+    post.likes = post.likedBy.length; // Update the likes count
+    await post.save();
+
+    res.status(200).json({ likes: post.likes, likedBy: post.likedBy });
+  } catch (error) {
+    console.error("Error toggling like:", error);
     res.status(500).json({ message: error.message });
+  }
+};
+
+export const getLikedUsers = async (req, res) => {
+  const { postId } = req.params;
+
+  try {
+    // Find the post and populate the likedBy field to get user details
+    const post = await Post.findById(postId).populate(
+      "likedBy",
+      "username email"
+    );
+
+    if (!post) {
+      return res.status(404).json({ message: "Post not found" });
+    }
+
+    res.status(200).json(post.likedBy); // Return the list of users who liked the post
+  } catch (error) {
+    console.error("Error fetching liked users:", error);
+    res
+      .status(500)
+      .json({ message: "An error occurred while fetching liked users" });
   }
 };

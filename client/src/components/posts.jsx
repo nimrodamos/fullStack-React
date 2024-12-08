@@ -7,14 +7,15 @@ const Posts = () => {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [newComment, setNewComment] = useState({}); // Store new comment text for each post
-  const userId = useSelector((state) => state.user._id); // Get logged-in user ID from Redux store
+  const [newComment, setNewComment] = useState({});
+  const [likedUsers, setLikedUsers] = useState([]);
+  const [showLikes, setShowLikes] = useState(null);
+  const userId = useSelector((state) => state.user._id);
 
-  // Fetch posts from the server
   const fetchPosts = async () => {
     try {
       const response = await axios.get("http://localhost:5000/posts");
-      setPosts(response.data); // Update the posts
+      setPosts(response.data);
     } catch (err) {
       console.error("Error fetching posts:", err.message);
       setError("Failed to fetch posts. Please try again later.");
@@ -23,7 +24,41 @@ const Posts = () => {
     }
   };
 
-  // Handle adding a new comment
+  const handleLikeToggle = async (postId) => {
+    try {
+      const response = await axios.patch(
+        `http://localhost:5000/posts/${postId}/toggle-like`,
+        { userId }
+      );
+
+      setPosts((prevPosts) =>
+        prevPosts.map((post) =>
+          post._id === postId
+            ? {
+                ...post,
+                likes: response.data.likes,
+                likedBy: response.data.likedBy,
+              }
+            : post
+        )
+      );
+    } catch (err) {
+      console.error("Error toggling like:", err.message);
+    }
+  };
+
+  const fetchLikedUsers = async (postId) => {
+    try {
+      const response = await axios.get(
+        `http://localhost:5000/posts/${postId}/likes`
+      );
+      setLikedUsers(response.data);
+      setShowLikes(postId);
+    } catch (err) {
+      console.error("Error fetching liked users:", err.message);
+    }
+  };
+
   const handleAddComment = async (postId) => {
     if (!newComment[postId]) return;
 
@@ -34,7 +69,6 @@ const Posts = () => {
         authorId: userId,
       });
 
-      // Update the specific post's comments in state
       setPosts((prevPosts) =>
         prevPosts.map((post) =>
           post._id === postId
@@ -42,7 +76,7 @@ const Posts = () => {
             : post
         )
       );
-      setNewComment((prev) => ({ ...prev, [postId]: "" })); // Clear the comment input
+      setNewComment((prev) => ({ ...prev, [postId]: "" }));
     } catch (err) {
       console.error("Error adding comment:", err.message);
     }
@@ -93,9 +127,50 @@ const Posts = () => {
             <div className="text-sm text-gray-500">
               {post.title || "Untitled Post"}
             </div>
+
+            <div className="flex items-center mt-4">
+              <button
+                onClick={() => handleLikeToggle(post._id)}
+                className={`px-4 py-2 rounded ${
+                  post.likedBy?.includes(userId)
+                    ? "bg-red-500 text-white hover:bg-red-600"
+                    : "bg-blue-500 text-white hover:bg-blue-600"
+                }`}
+              >
+                {post.likedBy?.includes(userId) ? "Unlike" : "Like"}
+              </button>
+              <span
+                onClick={() => fetchLikedUsers(post._id)}
+                className="ml-2 text-blue-500 hover:underline cursor-pointer"
+              >
+                {post.likes || 0} likes
+              </span>
+            </div>
+
+            {showLikes === post._id && (
+              <div className="bg-gray-100 p-4 rounded mt-2">
+                <h4 className="font-semibold mb-2">Liked by:</h4>
+                <ul>
+                  {likedUsers.length > 0 ? (
+                    likedUsers.map((user) => (
+                      <li key={user._id} className="text-gray-700">
+                        {user.username} ({user.email})
+                      </li>
+                    ))
+                  ) : (
+                    <p className="text-gray-500">No likes yet.</p>
+                  )}
+                </ul>
+                <button
+                  onClick={() => setShowLikes(null)}
+                  className="mt-2 text-sm text-red-500 hover:underline"
+                >
+                  Close
+                </button>
+              </div>
+            )}
           </div>
 
-          {/* Comments Section */}
           <div className="p-6 border-t">
             <h3 className="text-xl font-semibold mb-4">Comments</h3>
             {post.comments.length > 0 ? (
