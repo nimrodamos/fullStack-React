@@ -6,6 +6,7 @@ import HomePage from "./pages/HomePage";
 import AboutPage from "./pages/AboutPage";
 import WelcomePage from "./pages/WelcomePage";
 import ProfilePage from "./pages/ProfilePage";
+import Logout from "./components/Logout";
 
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useEffect } from "react";
@@ -45,6 +46,7 @@ function App() {
           <Route path="/Login" element={<Login />} />
           <Route path="/Signup" element={<Signup />} />
           <Route path="/profile/:username" element={<ProfilePage />} />
+          <Route path="/logout" element={<Logout />} />
         </Routes>
       </BrowserRouter>
     </div>

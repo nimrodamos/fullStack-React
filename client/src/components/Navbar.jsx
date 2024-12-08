@@ -1,16 +1,17 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FiMenu, FiSearch } from "react-icons/fi";
 import { FaSun, FaMoon } from "react-icons/fa";
+import Cookies from "js-cookie"; // To manage cookies
+import { useDispatch } from "react-redux";
+import { resetUser } from "../store/slices/userSlice"; // Adjusted path for Redux slice
 
 // Menu links configuration
 const menuLinks = [
   { to: "/Home", label: "Home" },
   { to: "/about", label: "About" },
-  { to: "/", label: "LogOut" },
 ];
 
-// Component for menu items
 const MenuItems = ({ onClick }) => (
   <ul className="flex flex-col md:flex-row md:space-x-6 space-y-4 md:space-y-0 items-center">
     {menuLinks.map((link, index) => (
@@ -30,12 +31,13 @@ const MenuItems = ({ onClick }) => (
   </ul>
 );
 
-// Main Navbar component
 const Navbar = () => {
   const [isHovered, setIsHovered] = useState(false);
   const [darkMode, setDarkMode] = useState(
     () => localStorage.getItem("darkMode") === "true"
   );
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   // Toggle Dark Mode
   const toggleDarkMode = useCallback(() => {
@@ -45,14 +47,12 @@ const Navbar = () => {
     document.documentElement.classList.toggle("dark", newMode);
   }, [darkMode]);
 
-  // Apply the initial Dark Mode state on load
-  useEffect(() => {
-    if (darkMode) {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
-  }, [darkMode]);
+  // Logout function
+  const handleLogout = () => {
+    Cookies.remove("jwt"); // Remove the JWT cookie
+    dispatch(resetUser()); // Reset user state in Redux
+    navigate("/"); // Redirect to Welcome/Login page
+  };
 
   // Toggle the menu state
   const toggleMenu = useCallback(() => {
@@ -87,6 +87,13 @@ const Navbar = () => {
         {/* Menu items and Dark Mode */}
         <div className="hidden md:flex items-center space-x-6 pr-4 md:pr-0">
           <MenuItems />
+          {/* Logout button */}
+          <button
+            onClick={handleLogout}
+            className="text-white text-lg transition-transform duration-200 hover:text-gray-300"
+          >
+            Logout
+          </button>
           {/* Dark Mode toggle icon */}
           <div
             className="cursor-pointer text-2xl transition-colors duration-200"
@@ -99,19 +106,6 @@ const Navbar = () => {
               <FaMoon className="text-gray-800" />
             )}
           </div>
-        </div>
-
-        {/* Dark Mode toggle for mobile */}
-        <div
-          className="md:hidden cursor-pointer text-2xl ml-4"
-          onClick={toggleDarkMode}
-          title="Toggle Dark Mode"
-        >
-          {darkMode ? (
-            <FaSun className="text-yellow-400" />
-          ) : (
-            <FaMoon className="text-gray-800" />
-          )}
         </div>
 
         {/* Hamburger icon for mobile */}
@@ -138,6 +132,12 @@ const Navbar = () => {
             }}
           >
             <MenuItems onClick={closeMenu} />
+            <button
+              onClick={handleLogout}
+              className="text-white text-lg transition-transform duration-200 hover:text-gray-300 w-full text-left"
+            >
+              Logout
+            </button>
           </div>
         </>
       )}
