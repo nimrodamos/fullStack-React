@@ -1,51 +1,56 @@
-import React from "react";
-import { useSelector } from "react-redux"; // נשתמש כדי לשלוף מידע מה-Redux
-import Posts from "../components/Posts"; // ייבוא רכיב הפוסטים
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import axios from "axios";
 import Navbar from "../components/Navbar";
 
 const ProfilePage = () => {
-  // שליפת פרטי המשתמש מ-Redux
-  const { name, email } = useSelector((state) => state.user);
+  const { username } = useParams(); // Access the `username` from the URL
+  const [user, setUser] = useState(null); // State to hold user data
+  const [error, setError] = useState(null); // State to handle errors
+  const [loading, setLoading] = useState(true); // State to handle loading
 
-  // רשימת הפוסטים לדוגמה, אפשר להחליף ב-API
-  const userPosts = [
-    {
-      id: 1,
-      title: "User's First Post",
-      content: "This is the user's first post",
-    },
-    {
-      id: 2,
-      title: "User's Second Post",
-      content: "This is the user's second post",
-    },
-  ];
+  useEffect(() => {
+    // Fetch user details based on the username
+    const fetchUser = async () => {
+      try {
+        setLoading(true);
+        const response = await axios.get(
+          `http://localhost:5000/users/name/${username}`
+        );
+        setUser(response.data); // Set user data
+      } catch (err) {
+        setError("User not found or an error occurred.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUser();
+  }, [username]);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div className="text-red-500">{error}</div>;
+  }
 
   return (
     <div>
       <Navbar />
       <div className="max-w-4xl mx-auto p-4">
-        <h1 className="text-3xl font-bold mb-6">Profile</h1>
-        <div className="bg-white shadow-md rounded p-4 mb-4 border">
-          <h2 className="text-xl font-semibold mb-2">User Information</h2>
-          <p className="text-gray-700 mb-1">
-            <strong>Name:</strong> {name || "Guest"}
+        <h1 className="text-3xl font-bold mb-6">{user.username}'s Profile</h1>
+        <div className="bg-white shadow-lg rounded-lg p-6">
+          <h2 className="text-2xl font-semibold mb-4">About {user.username}</h2>
+          <p className="mb-4 text-gray-800">
+            <strong>Email:</strong> {user.email}
           </p>
-          <p className="text-gray-700 mb-1">
-            <strong>Email:</strong> {email || "Not provided"}
+          <p className="mb-4 text-gray-800">
+            <strong>Joined:</strong>{" "}
+            {new Date(user.createdAt).toLocaleDateString()}
           </p>
-        </div>
-        <div>
-          <h2 className="text-xl font-semibold mb-4">Your Posts</h2>
-          {userPosts.map((post) => (
-            <div
-              key={post.id}
-              className="bg-white shadow-md rounded p-4 mb-4 border"
-            >
-              <h3 className="text-lg font-bold">{post.title}</h3>
-              <p className="text-gray-700">{post.content}</p>
-            </div>
-          ))}
+          <p className="text-gray-600">{user.bio || "No bio available."}</p>
         </div>
       </div>
     </div>
