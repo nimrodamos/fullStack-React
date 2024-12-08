@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import Navbar from "../components/Navbar";
-import Posts from "../components/Posts";
+import Posts from "../components/posts";
 
 const ProfilePage = () => {
   const { username } = useParams();
