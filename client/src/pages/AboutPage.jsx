@@ -40,20 +40,20 @@ const AboutPage = () => {
     <>
       <Navbar />
       <div className="flex flex-col items-center py-8">
-        {/* Título */}
+        {/* Title */}
         <div className="text-center mb-16">
           <h1 className="text-5xl font-extrabold mb-4">Our Team</h1>
           <div className="h-1 w-24 bg-blue-500 mx-auto"></div>
         </div>
 
-        {/* Seção de Membros */}
+        {/* Team Members Section */}
         <div className="flex flex-wrap justify-center gap-12 mb-16">
           {teamMembers.map((member, index) => (
             <div
               key={index}
               className="flex flex-col items-center group relative"
             >
-              {/* Foto Circular */}
+              {/* Circular Photo */}
               <div className="relative overflow-hidden rounded-full w-40 h-40 transition-transform duration-300 group-hover:scale-110">
                 <img
                   src={member.photo}
@@ -61,10 +61,10 @@ const AboutPage = () => {
                   className="w-full h-full object-cover"
                 />
               </div>
-              {/* Nome */}
+              {/* Name */}
               <p className="mt-4 text-xl font-semibold">{member.name}</p>
 
-              {/* Ícones Abaixo do Nome, Visíveis Somente ao Hover */}
+              {/* Icons Below Name, Visible Only on Hover */}
               <div className="flex gap-4 mt-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                 <a
                   href={member.linkedin}
@@ -101,10 +101,10 @@ const AboutPage = () => {
           ))}
         </div>
 
-        {/* Texto Explicativo */}
+        {/* Explanatory Text */}
         <div className="max-w-3xl text-center">
           <p className="text-lg leading-relaxed">
-            Hello there, that's a mock social media built as our students
+            Hello there, that's a mock social media built as our students'
             project. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
             Vivamus lacinia odio vitae vestibulum vestibulum. Cras venenatis
             euismod malesuada. Phasellus at tincidunt enim. Aliquam erat
