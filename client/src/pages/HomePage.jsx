@@ -1,12 +1,18 @@
 import React from "react";
 import { useSelector } from "react-redux";
+import Navbar from "../components/Navbar";
+import Posts from "../components/posts";
+import AddPost from "../components/AddPost";
 
 const HomePage = () => {
   const user = useSelector((state) => state.user);
 
   return (
     <div>
-      <h1>Social Network</h1>
+      <Navbar />
+      <br></br>
+      <AddPost />
+      <Posts />
       <h1>{user?.email}</h1>
     </div>
   );
