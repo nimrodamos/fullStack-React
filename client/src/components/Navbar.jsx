@@ -62,7 +62,7 @@ const Navbar = () => {
   }, []);
 
   return (
-    <nav className="bg-project-color text-white p-4 shadow-md sticky top-0 z-50">
+    <nav className="bg-project-color dark:bg-project-color-dark text-white p-4 shadow-md sticky top-0 z-50">
       <div className="flex items-center justify-between w-full">
         {/* Logo no canto esquerdo */}
         <h1 className="text-2xl font-bold flex-shrink-0 pl-4 md:pl-0">

@@ -1,21 +1,28 @@
-import express from 'express';
-import { getPosts, createPost, getPostById, updatePost, deletePost } from '../controllers/postController.js';
+import express from "express";
+import {
+  getPosts,
+  createPost,
+  getPostById,
+  updatePost,
+  deletePost,
+} from "../controllers/postController.js";
+import { authenticateToken } from "../middleware/authMiddleware.js"; // Import the middleware
 
 const router = express.Router();
 
-// GET /posts - Get all posts
-router.get('/', getPosts);
+// GET /posts - Get all posts (public)
+router.get("/", getPosts);
 
-// POST /posts - Create a new post
-router.post('/', createPost);
+// POST /posts - Create a new post (protected)
+router.post("/", authenticateToken, createPost);
 
-// GET /posts/:postId - Get a specific post by its ID
-router.get('/:postId', getPostById);
+// GET /posts/:postId - Get a specific post by its ID (public)
+router.get("/:postId", getPostById);
 
-// PUT /posts/:postId - Update a post by its ID
-router.put('/:postId', updatePost);
+// PUT /posts/:postId - Update a post by its ID (protected)
+router.put("/:postId", authenticateToken, updatePost);
 
-// DELETE /posts/:postId - Delete a post by its ID
-router.delete('/:postId', deletePost);
+// DELETE /posts/:postId - Delete a post by its ID (protected)
+router.delete("/:postId", authenticateToken, deletePost);
 
 export default router;

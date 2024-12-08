@@ -2,7 +2,7 @@ import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
 import dotenv from "dotenv";
-import jwt from "jsonwebtoken";
+import { authenticateToken } from "./middleware/authMiddleware.js";
 
 dotenv.config(); // Load environment variables
 console.log("JWT_SECRET_KEY:", process.env.JWT_SECRET_KEY);
@@ -23,23 +23,6 @@ app.use(
   })
 );
 
-// Middleware for JWT authentication
-const authenticateToken = (req, res, next) => {
-  const authHeader = req.headers.authorization;
-  const token = authHeader && authHeader.split(" ")[1];
-
-  if (!token) {
-    return res.status(401).json({ message: "Access denied" });
-  }
-
-  jwt.verify(token, process.env.JWT_SECRET_KEY, (err, user) => {
-    if (err) return res.status(403).json({ message: "Invalid token" });
-
-    req.user = user; // Attach user to the request
-    next();
-  });
-};
-
 // MongoDB connection
 mongoose
   .connect(process.env.MONGO_URI)
@@ -52,8 +35,8 @@ mongoose
 
 // Routes setup
 app.use("/users", userRoutes);
-app.use("/posts", authenticateToken, postRoutes); // Protect post routes
-app.use("/comments", authenticateToken, commentRoutes); // Protect comment routes
+app.use("/posts", postRoutes);
+app.use("/comments", commentRoutes);
 
 // Start server
 app.listen(5000, () => {

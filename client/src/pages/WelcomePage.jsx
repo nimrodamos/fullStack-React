@@ -14,7 +14,7 @@ const WelcomePage = () => {
       </div>
 
       {/* טופס Login */}
-      <div className="max-w-md w-full">
+      <div className="max-w-md w-full rounded-xl overflow-hidden">
         <Login />
       </div>
     </div>

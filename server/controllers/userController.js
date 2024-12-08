@@ -51,12 +51,12 @@ export const login = async (req, res) => {
 
     // צור JWT
     const token = jwt.sign(
-      { userId: user._id, username: user.username },
-      process.env.JWT_SECRET_KEY, // משתמש במפתח הסודי מ-ENV
+      { _id: user._id, username: user.username }, // Update to `_id`
+      process.env.JWT_SECRET_KEY,
       { expiresIn: "1h" }
     );
 
-    res.status(200).json({ message: "Logged in successfully", token });
+    res.status(200).json({ message: "Logged in successfully", token, user });
   } catch (error) {
     console.error("Login error:", error.message); // לוג נוסף
     res.status(500).json({ message: error.message });
@@ -86,5 +86,18 @@ export const getAllUsers = async (req, res) => {
     res.status(200).json(users);
   } catch (error) {
     res.status(500).json({ message: error.message });
+  }
+};
+
+// קבלת פרופיל המשתמש (מוגן עם טוקן)
+export const getUserProfile = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id).select("-password"); // Use `_id`
+    if (!user) {
+      return res.status(404).json({ message: "User not found." });
+    }
+    res.status(200).json(user);
+  } catch (error) {
+    res.status(500).json({ message: "Failed to fetch user profile." });
   }
 };
